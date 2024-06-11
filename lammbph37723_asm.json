@@ -1,0 +1,13 @@
+{
+    "users": [{
+        "id": 1,
+        "name": "thanh",
+        "email": "thanh123@gmail.com",
+        "password": "123",
+        "confirmPassword": "123"
+    }],
+    "products": [],
+    "carts": [],
+    "orders": [],
+    "contacts": []
+}
