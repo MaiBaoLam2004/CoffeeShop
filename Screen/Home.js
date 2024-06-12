@@ -1,5 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import React, {useCallback, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,90 +13,21 @@ import {
 } from 'react-native';
 import {Image} from 'react-native-elements';
 
-const dsdata = [
-  {
-    id: 1,
-    name: 'Cappuccino',
-    price: 2,
-    mota:'Capuchino là thức uống hòa quyện giữa hương thơm của sữa, vị béo của bọt kem cùng vị đậm đà từ cà phê Espresso. Tất cả tạo nên một hương vị đặc biệt, một chút nhẹ nhàng, trầm lắng và tinh tế',
-    photo:
-      'https://media.saigontourist.edu.vn/Media/1_STHCHOME/FolderFunc/202303/Images/nguon-goc-ra-doi-cua-cafe-capuchino-la-gi-20230320105422-e.jpg',
-  },
-  {
-    id: 2,
-    name: 'Cà phê Arabica',
-    price: 1.5,
-    mota:'Cà Phê Arabica có tên khoa học là Coffea Arabica, tên theo tiếng Việt là Cà phê Chè do loại cà phê này có lá nhỏ, cây thường để thấp giống cây chè là một loại cây công nghiệp phổ biến ở Việt Nam. Arabica có hàm lượng cafeine từ 1 - 2 % thấp hơn phân nữa hàm lượng cafeine của Robusta',
-    photo:
-      'https://www.brevillevietnam.com/wp-content/uploads/2024/02/hat-ca-phe-arabica.jpg',
-  },
-  {
-    id: 3,
-    name: 'Cà phê Robusta',
-    mota:'Robusta có gốc từ robust – có ý nghĩa là mạnh. Như vậy, Robusta có nghĩa là một loại cà phê có vị mạnh, giàu caffeine. Cà Phê Robusta có tên khoa học là Coffea robusta hay còn gọi là cà phê Vối, có hàm lượng caffeine từ 2 - 4 %, có vị gắt hơn, hạt tròn hơn và nhỏ hơn hạt cà phê Arabica.',
-    price: 2.4,
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-  },
-  {
-    id: 4,
-    name: 'Cà phê Cherry',
-    mota:'Cà phê Cherry là loại cà phê thích hợp với rất nhiều loại khí hậu, có khả năng chống lại sâu bệnh rất tốt. Tuy nhiên chúng có độ chua cao nên thường rất hiếm trồng và chiếm khoảng 1% lượng cà phê tiêu thụ trên thế giới. Về hình dáng, thân cây Café Cherry khá cao, lá có màu xanh bóng dài to',
-    price: 2.3,
-    photo:
-      'https://artcoffee.vn/wp-content/uploads/huong-vi-cua-ca-phe-cherry-khong-dang-gat-nen-rat-duoc-phai-nu-yeu-thich.jpg',
-  },
-  {
-    id: 5,
-    name: 'Cà phê Moka',
-    mota:'Cà phê Moka thuộc dòng sản phẩm của Arabica, hạt có hình dáng thon dài và đường rãnh lượn sóng ở giữa hạt. Cà phê Moka có hương thơm nhẹ nhàng quyến rũ rất đặc trưng, vị từ chua chuyển sang hậu đắng rất đặc biệt. Khi pha cà phê có màu nâu nhạt sánh',
-    price: 2.1,
-    photo:
-      'https://dayphache.edu.vn/wp-content/uploads/2016/05/ca-phe-mocha-nong.jpg',
-  },
-];
-
-
-const CompItem = ({sp}) => {
-  const navigation = useNavigation();
-  return (
-    <TouchableOpacity onPress={() => navigation.navigate('Detail', {product: sp})}>
-      <View style={st.viewImg}>
-        <View>
-          <Image source={{uri: sp.photo}} style={st.imgview} />
-        </View>
-        <View style={{margin: 10}}>
-          <View>
-            <Text style={st.nameimg}>{sp.name}</Text>
-          </View>
-          <View style={st.money}>
-            <View style={st.imgPrice}>
-              <Image
-                style={st.iconMoney}
-                source={require('../images/icon_money.png')}
-              />
-              <Text style={st.gia}>{sp.price}</Text>
-            </View>
-            <TouchableOpacity>
-              <View>
-                <View style={st.boxThem}>
-                  <Image
-                    style={st.imgThem}
-                    source={require('../images/icon_add.png')}
-                  />
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 function Home() {
   const [reloading, setReloading] = useState(false);
   const navigation = useNavigation();
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    fetch('http://10.24.54.72:3000/products') // Đảm bảo thay thế bằng địa chỉ IP của bạn
+      .then(response => response.json())
+      .then(data => {
+        setProducts(data);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  }, []);
+
   const startReload = useCallback(() => {
     // khi bắt đầu reload
     console.log('Bắt đầu Reloading');
@@ -109,7 +41,7 @@ function Home() {
   return (
     <View style={st.container}>
       <View style={st.back_gr}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <View style={st.imgicon}>
             <Image
               style={st.icon_back}
@@ -124,7 +56,6 @@ function Home() {
               style={st.icon_tim}
               resizeMode="contain"
               source={require('../images/icon_avatar.png')}
-
             />
           </View>
         </TouchableOpacity>
@@ -163,12 +94,46 @@ function Home() {
             </ScrollView>
           </View>
         </View>
-        <SafeAreaView style={{}}>
+        <SafeAreaView>
           <FlatList
             horizontal
-            data={dsdata}
-            renderItem={({item}) => <CompItem sp={item} />}
-            keyExtractor={item => item.id}
+            data={products}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => (
+              <TouchableOpacity
+              onPress={() => navigation.navigate('Detail', {product: item})}
+              >
+                <View style={st.viewImg}>
+                  <View>
+                    <Image source={{uri: item.photo}} style={st.imgview} />
+                  </View>
+                  <View style={{margin: 10}}>
+                    <View>
+                      <Text style={st.nameimg}>{item.name}</Text>
+                    </View>
+                    <View style={st.money}>
+                      <View style={st.imgPrice}>
+                        <Image
+                          style={st.iconMoney}
+                          source={require('../images/icon_money.png')}
+                        />
+                        <Text style={st.gia}>{item.price}</Text>
+                      </View>
+                      <TouchableOpacity>
+                        <View>
+                          <View style={st.boxThem}>
+                            <Image
+                              style={st.imgThem}
+                              source={require('../images/icon_add.png')}
+                            />
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
           />
         </SafeAreaView>
         <Text
@@ -182,15 +147,48 @@ function Home() {
           }}>
           Top Coffee
         </Text>
-        <SafeAreaView style={{}}>
+        <SafeAreaView>
           <FlatList
             horizontal
-            data={dsdata}
-            renderItem={({item}) => <CompItem sp={item} />}
-            keyExtractor={item => item.id}
+            data={products}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => (
+              <TouchableOpacity
+              onPress={() => navigation.navigate('Detail', {product: item})}
+              >
+                <View style={st.viewImg}>
+                  <View>
+                    <Image source={{uri: item.photo}} style={st.imgview} />
+                  </View>
+                  <View style={{margin: 10}}>
+                    <View>
+                      <Text style={st.nameimg}>{item.name}</Text>
+                    </View>
+                    <View style={st.money}>
+                      <View style={st.imgPrice}>
+                        <Image
+                          style={st.iconMoney}
+                          source={require('../images/icon_money.png')}
+                        />
+                        <Text style={st.gia}>{item.price}</Text>
+                      </View>
+                      <TouchableOpacity>
+                        <View>
+                          <View style={st.boxThem}>
+                            <Image
+                              style={st.imgThem}
+                              source={require('../images/icon_add.png')}
+                            />
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
           />
         </SafeAreaView>
-
       </ScrollView>
     </View>
   );

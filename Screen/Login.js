@@ -6,15 +6,64 @@ import {
   TextInput,
   SafeAreaView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
+import { useNavigation } from '@react-navigation/native';
 
-function Login({navigation}) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation = useNavigation();
+
+  const handleLogin = async () => {
+    if (usernameOrEmail.trim() === '' || password.trim() === '') {
+      Alert.alert('Thông báo', 'Vui lòng nhập tên đăng nhập/email và mật khẩu.');
+      return;
+    }
+    
+    // Kiểm tra mật khẩu có ít nhất 8 ký tự
+    if (password.trim().length < 8) {
+      Alert.alert('Thông báo', 'Mật khẩu cần ít nhất 8 ký tự.');
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://10.24.54.72:3000/users');
+      const users = await response.json();
+  
+      // Tìm kiếm người dùng trong danh sách users với tên đăng nhập hoặc email
+      const user = users.find(user => user.username === usernameOrEmail || user.email === usernameOrEmail);
+  
+      if (!user) {
+        Alert.alert('Login Failed', 'Tên đăng nhập hoặc email không tồn tại.');
+        return;
+      }
+  
+      // So sánh mật khẩu
+      if (user.password !== password) {
+        Alert.alert('Login Failed', 'Mật khẩu không chính xác.');
+        return;
+      }
+  
+      // Đăng nhập thành công
+      console.log('Login successful:', user);
+  
+      // Hiển thị thông báo sau 1 giây
+      setTimeout(() => {
+        Alert.alert('Thông báo', 'Bạn đã đăng nhập thành công.')
+        navigation.navigate('MyDrawer');
+      }, 1000);
+    } catch (error) {
+      console.error('Error logging in:', error.message);
+      Alert.alert('Thông báo', 'Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.');
+    }
+  };
+  
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,15 +78,15 @@ function Login({navigation}) {
       <View style={{padding: 20}}></View>
       <TextInput
         style={styles.input}
-        onChangeText={setUsername}
+        onChangeText={text => setUsernameOrEmail(text)}
         placeholder="Tài khoản hoặc Email"
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
-        value={username}
+        value={usernameOrEmail}
       />
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
-          onChangeText={setPassword}
+          onChangeText={text => setPassword(text)}
           value={password}
           placeholder="Mật khẩu"
           placeholderTextColor="rgba(255, 255, 255, 0.5)"
@@ -67,7 +116,7 @@ function Login({navigation}) {
       </View>
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate('MainScreen')}>
+        onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.loginButtonGG}>

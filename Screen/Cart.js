@@ -1,77 +1,77 @@
+import React, {useState, useCallback, useEffect} from 'react';
 import {
-  FlatList,
-  RefreshControl,
   SafeAreaView,
-  ScrollView,
-  StyleSheet,
+  View,
   Text,
   TouchableOpacity,
-  View,
+  Image,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
-import {Image} from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-const dataCart = [
-  {
-    id: 1,
-    name: 'capu',
-    price: 4,
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-    quantity: 2,
-  },
-  {
-    id: 2,
-    name: 'capu',
-    price: 4,
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-    quantity: 2,
-  },
-  {
-    id: 3,
-    name: 'capu',
-    price: 4,
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-    quantity: 2,
-  },
-  {
-    id: 4,
-    name: 'capu',
-    price: 4,
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-    quantity: 2,
-  },
-  {
-    id: 5,
-    name: 'capu',
-    price: 4,
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-    quantity: 2,
-  },
-];
-function Cart() {
+const Cart = () => {
   const [reloading, setReloading] = useState(false);
+  const [dataCart, setDataCart] = useState([]);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    fetchCartData();
+  }, []);
+
+  const fetchCartData = async () => {
+    try {
+      const response = await fetch('http://10.24.54.72:3000/carts');
+      const data = await response.json();
+      setDataCart(data);
+    } catch (error) {
+      console.error('Failed to fetch cart data:', error);
+    }
+  };
+
   const startReload = useCallback(() => {
-    // khi bắt đầu reload
     console.log('Bắt đầu Reloading');
     setReloading(true);
     setTimeout(() => {
-      // hết thời gian 5s
-      setReloading(false); // ẩn vòng quay
+      setReloading(false);
       console.log('Đã Reload xong');
     }, 1000);
   }, []);
+
+  const updateQuantity = async (id, delta) => {
+    const newDataCart = dataCart.map(item => {
+      if (item.id === id) {
+        return {...item, quantity: Math.max(item.quantity + delta, 0)};
+      }
+      return item;
+    });
+
+    // Update the quantity in the server
+    const updatedItem = newDataCart.find(item => item.id === id);
+    try {
+      await fetch(`http://10.24.54.72:3000/carts/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({quantity: updatedItem.quantity}),
+      });
+    } catch (error) {
+      console.error('Failed to update quantity:', error);
+    }
+
+    setDataCart(newDataCart);
+  };
+
+  const totalPrice = dataCart
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
+    .toFixed(1);
+
   return (
     <SafeAreaView style={st.container}>
       <View style={st.back_gr}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <View style={st.imgicon}>
             <Image
               style={st.icon_back}
@@ -97,11 +97,7 @@ function Cart() {
         <SafeAreaView>
           <FlatList
             refreshControl={
-              //  tải lại dữ liệu mới
-              <RefreshControl
-                refreshing={reloading} // trạng thái đánh dấu đang được làm mới
-                onRefresh={startReload} // sử lý sự kiện callback
-              />
+              <RefreshControl refreshing={reloading} onRefresh={startReload} />
             }
             data={dataCart}
             keyExtractor={item => item.id.toString()}
@@ -145,7 +141,8 @@ function Cart() {
                         marginTop: 20,
                         justifyContent: 'space-between',
                       }}>
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => updateQuantity(item.id, -1)}>
                         <View style={st.bgdel}>
                           <Image
                             style={st.imgdel}
@@ -164,7 +161,8 @@ function Cart() {
                           {item.quantity}
                         </Text>
                       </View>
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => updateQuantity(item.id, 1)}>
                         <View style={st.bgdel}>
                           <Image
                             style={st.imgadd}
@@ -198,10 +196,11 @@ function Cart() {
                   style={st.iconMoney}
                   source={require('../images/icon_money.png')}
                 />
-                <Text style={st.gia}>4</Text>
+                <Text style={st.gia}>{totalPrice}</Text>
               </View>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Payment', {totalPrice})}>
               <View>
                 <View style={st.boxThem}>
                   <Text style={st.textaddcart}>Pay</Text>
@@ -213,7 +212,7 @@ function Cart() {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 export default Cart;
 

@@ -7,39 +7,27 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Image} from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 
-const DataFavorites = [
-  {
-    id: 1,
-    name: 'Cappuccino',
-    note: 'Cappuccino is a latte made with more foam than steamed milk,often with a sprinkle of cocoa powder or cinnamon on top.',
-    photo:
-      'https://media.saigontourist.edu.vn/Media/1_STHCHOME/FolderFunc/202303/Images/nguon-goc-ra-doi-cua-cafe-capuchino-la-gi-20230320105422-e.jpg',
-  },
-  {
-    id: 2,
-    name: 'Cà phê Arabica',
-    note: 'Cappuccino 2 is a latte made with more foam than steamed milk,often with a sprinkle of cocoa powder or cinnamon on top.',
-    photo:
-      'https://www.brevillevietnam.com/wp-content/uploads/2024/02/hat-ca-phe-arabica.jpg',
-  },
-  {
-    id: 3,
-    name: 'Cà phê Robusta',
-    note: 'Cappuccino 3 is a latte made with more foam than steamed milk,often with a sprinkle of cocoa powder or cinnamon on top.',
-    photo:
-      'https://cdn.tgdd.vn/2023/10/CookRecipe/CookTipsNote/ca-phe-arabica-la-gi-ca-phe-robusta-la-gi-phan-biet-arabica-tipsnote-800x550-6.jpg',
-  },
-];
-
-const Favorites = () => {
+function Favorites(){
   const [reloading, setReloading] = useState(false);
   const navigation = useNavigation();
+  const [favorites, setFavorites] = useState([]);
 
+  useEffect(() => {
+    fetch('http://10.24.54.72:3000/favorite') // Đảm bảo thay thế bằng địa chỉ IP của bạn
+      .then(response => response.json())
+      .then(data => {
+        setFavorites(data);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  }, []);
+  
   const startReload = useCallback(() => {
     // khi bắt đầu reload
     console.log('Bắt đầu Reloading');
@@ -53,7 +41,7 @@ const Favorites = () => {
   return (
     <SafeAreaView style={st.container}>
       <View style={st.back_gr}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <View style={st.imgicon}>
             <Image
               style={st.icon_back}
@@ -84,7 +72,7 @@ const Favorites = () => {
               onRefresh={startReload} // sử lý sự kiện callback
             />
           }
-          data={DataFavorites}
+          data={favorites}
           keyExtractor={item => item.id.toString()}
           renderItem={({item}) => (
             <View style={st.viewitem}>
@@ -120,7 +108,7 @@ const Favorites = () => {
                       marginLeft: 22,
                       marginTop: 10,
                     }}>
-                    Description
+                    Mô tả
                   </Text>
                   <Text
                     style={{
@@ -132,7 +120,7 @@ const Favorites = () => {
                       marginBottom: 20,
                       marginRight: 20,
                     }}>
-                    {item.note}
+                    {item.mota}
                   </Text>
                 </View>
               </View>

@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -13,18 +14,29 @@ import Payment from './Payment';
 import WellCome from './WellCome';
 import User from './User';
 import Setting from './Setting';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
+function MyDrawer() {
+  return (
+    <Drawer.Navigator initialRouteName="MainScreen">
+      <Drawer.Screen name="MainScreen" component={MainScreen} />
+      <Drawer.Screen name="Setting" component={Setting}/>
+    </Drawer.Navigator>
+  );
+}
 
 function MainScreen() {
   return (
-    <Tab.Navigator
+    <Tab.Navigator initialRouteName="Home"
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
-
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Cart') {
@@ -50,19 +62,21 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {paddingTop: 0}, // Loại bỏ khoảng trắng phía trên
-        }}
+        // screenOptions={{
+        //   headerShown: false,
+        //   contentStyle: {paddingTop: 0}, // Loại bỏ khoảng trắng phía trên
+        // }}
         initialRouteName="WellCome">
         <Stack.Screen name="WellCome" component={WellCome} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Home" component={Home} />
+        {/* <Stack.Screen name="Home" component={Home} /> */}
         <Stack.Screen name="User" component={User} />
-        <Stack.Screen name="MainScreen" component={MainScreen} />
+        {/* <Stack.Screen name="MainScreen" component={MainScreen} /> */}
+        <Stack.Screen name="MyDrawer" component={MyDrawer} options={{ headerShown: false }}/>
         <Stack.Screen name="Detail" component={Detail} />
         <Stack.Screen name="Setting" component={Setting} />
+        <Stack.Screen name="Payment" component={Payment} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -9,7 +9,7 @@ const WellCome = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Login');
-    }, 1000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [navigation]);

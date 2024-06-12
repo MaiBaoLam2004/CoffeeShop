@@ -26,7 +26,7 @@ function User() {
       <View style={styles.imageContainer}>
         <View style={styles.backGroup}>
           <TouchableOpacity
-           onPress={() => navigation.navigate('MainScreen')}
+           onPress={() => navigation.navigate('MyDrawer')}
           >
             <View style={styles.iconbacktim}>
               <Image

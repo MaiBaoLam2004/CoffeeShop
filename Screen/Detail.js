@@ -11,20 +11,8 @@ import {Image} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 
 function Detail({route}) {
-  const [reloading, setReloading] = useState(false);
-  const {product} = route.params;
+  const { product } = route.params;
   const navigation = useNavigation();
-
-  const startReload = useCallback(() => {
-    // khi bắt đầu reload
-    console.log('Bắt đầu Reloading');
-    setReloading(true);
-    setTimeout(() => {
-      // hết thời gian 5s
-      setReloading(false); // ẩn vòng quay
-      console.log('Đã Reload xong');
-    }, 1000);
-  }, []);
   return (
     <SafeAreaView style={st.container}>
       <ScrollView>
@@ -65,7 +53,7 @@ function Detail({route}) {
                   {product.name}
                 </Text>
                 <Text
-                  style={{fontSize: 30, fontWeight: 'bold', color: 'white', marginTop: 10}}>
+                  style={{fontSize: 30, fontWeight: 'bold', color: 'white', marginLeft: 5}}>
                   Mô tả
                 </Text>
                 <Text style={st.text2}>{product.mota}</Text>
@@ -193,7 +181,7 @@ const st = StyleSheet.create({
     color: 'white',
   },
   text1: {
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
   },

@@ -9,14 +9,101 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {Image} from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
 
-function Register({navigation}){
+function Register() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible1, setPasswordVisible1] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [passwordVisible1, setPasswordVisible1] = useState(false);
+  const navigation = useNavigation();
+  const [isFieldsFilled, setIsFieldsFilled] = useState(false);
+
+  const registerUser = async (username, email, password) => {
+    try {
+      const response = await fetch('http://10.24.54.72:3000/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({username, email, password}),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+
+      const userData = await response.json();
+      console.log('User registered:', userData);
+      return true; // Trả về true nếu đăng ký thành công
+    } catch (error) {
+      console.error('Error registering user:', error.message);
+      return false; // Trả về false nếu có lỗi xảy ra
+    }
+  };
+
+  
+const handleRegister = async () => {
+  if (
+    username.trim() === '' ||
+    email.trim() === '' ||
+    password.trim() === '' ||
+    confirmPassword.trim() === ''
+  ) {
+    Alert.alert(
+      'Thông báo',
+      'Vui lòng nhập đủ thông tin để đăng ký',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+    );
+    return;
+  }
+
+  if (password.length < 8) {
+    Alert.alert(
+      'Thông báo',
+      'Mật khẩu cần ít nhất 8 ký tự',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+    );
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    Alert.alert(
+      'Thông báo',
+      'Mật khẩu nhập lại phải giống với Mật khẩu',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+    );
+    return;
+  }
+
+  const registerSuccess = await registerUser(username, email, password);
+
+  if (registerSuccess) {
+    Alert.alert(
+      'Thông báo',
+      'Bạn đã đăng ký thành công',
+      [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+    );
+  } else {
+    Alert.alert(
+      'Thông báo',
+      'Đăng ký thất bại. Vui lòng thử lại sau.',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+    );
+  }
+};
+  
+  const checkFields = () => {
+    if (username && email && password && confirmPassword) {
+      setIsFieldsFilled(true);
+    } else {
+      setIsFieldsFilled(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -30,22 +117,26 @@ function Register({navigation}){
       <View style={{padding: 20}}></View>
       <TextInput
         style={styles.input}
-        onChangeText={setUsername}
-        placeholder="Name"
+        placeholder="Tên đăng nhập"
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        onChangeText={text => setUsername(text)}
         value={username}
+        onBlur={checkFields}
       />
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
         placeholder="Email"
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        onChangeText={text => setEmail(text)}
         value={email}
+        onBlur={checkFields}
       />
+
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
-          onChangeText={setPassword}
+          onChangeText={text => setPassword(text)}
+          onBlur={checkFields}
           value={password}
           placeholder="Mật khẩu"
           placeholderTextColor="rgba(255, 255, 255, 0.5)"
@@ -65,11 +156,11 @@ function Register({navigation}){
           />
         </TouchableOpacity>
       </View>
-
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
-          onChangeText={setConfirmPassword}
+          onChangeText={text => setConfirmPassword(text)}
+          onBlur={checkFields}
           value={confirmPassword}
           placeholder="Nhập lại mật khẩu"
           placeholderTextColor="rgba(255, 255, 255, 0.5)"
@@ -89,7 +180,11 @@ function Register({navigation}){
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginButton}>
+      {!isFieldsFilled && (
+        <Text style={styles.error}>Vui lòng nhập các thông tin ở trên</Text>
+      )}
+
+      <TouchableOpacity onPress={handleRegister} style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Register</Text>
       </TouchableOpacity>
       <View style={styles.viewregister}>
@@ -100,7 +195,7 @@ function Register({navigation}){
       </View>
     </SafeAreaView>
   );
-};
+}
 
 export default Register;
 
