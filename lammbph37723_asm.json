@@ -1,22 +1,22 @@
 {
   "users": [
     {
-      "id": "1e34",
-      "username": "lam",
-      "email": "lamlam",
-      "password": "12345678"
-    },
-    {
-      "id": "107b",
-      "username": "2",
+      "username": "22",
       "email": "222",
-      "password": "11111111"
+      "password": "11111111",
+      "id": "107b"
     },
     {
       "id": "06dc",
       "username": "1",
       "email": "lam@gmail.com",
       "password": "111111111"
+    },
+    {
+      "id": "921b",
+      "username": "lam",
+      "email": "lam2",
+      "password": "11111111"
     }
   ],
   "products": [
@@ -54,9 +54,6 @@
       "mota": "Cà phê Moka thuộc dòng sản phẩm của Arabica, hạt có hình dáng thon dài và đường rãnh lượn sóng ở giữa hạt. Cà phê Moka có hương thơm nhẹ nhàng quyến rũ rất đặc trưng, vị từ chua chuyển sang hậu đắng rất đặc biệt. Khi pha cà phê có màu nâu nhạt sánh",
       "price": 2.1,
       "photo": "https://dayphache.edu.vn/wp-content/uploads/2016/05/ca-phe-mocha-nong.jpg"
-    },
-    {
-      "id": "1472"
     }
   ],
   "carts": [
@@ -65,7 +62,7 @@
       "name": "Cappuccino",
       "price": 2,
       "photo": "https://media.saigontourist.edu.vn/Media/1_STHCHOME/FolderFunc/202303/Images/nguon-goc-ra-doi-cua-cafe-capuchino-la-gi-20230320105422-e.jpg",
-      "quantity": 9
+      "quantity": 3
     },
     {
       "id": "2",

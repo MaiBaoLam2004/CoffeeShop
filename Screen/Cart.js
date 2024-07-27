@@ -22,7 +22,7 @@ const Cart = () => {
 
   const fetchCartData = async () => {
     try {
-      const response = await fetch('http://10.24.54.72:3000/carts');
+      const response = await fetch('http://192.168.1.106:3000/carts');
       const data = await response.json();
       setDataCart(data);
     } catch (error) {
@@ -50,7 +50,7 @@ const Cart = () => {
     // Update the quantity in the server
     const updatedItem = newDataCart.find(item => item.id === id);
     try {
-      await fetch(`http://10.24.54.72:3000/carts/${id}`, {
+      await fetch(`http://192.168.1.106:3000/carts/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
