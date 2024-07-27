@@ -62,7 +62,11 @@
       "name": "Cappuccino",
       "price": 2,
       "photo": "https://media.saigontourist.edu.vn/Media/1_STHCHOME/FolderFunc/202303/Images/nguon-goc-ra-doi-cua-cafe-capuchino-la-gi-20230320105422-e.jpg",
+<<<<<<< HEAD
       "quantity": 2
+=======
+      "quantity": 3
+>>>>>>> f4c624e592a85f84af9c187bdfa1815e74be406e
     },
     {
       "id": "2",
