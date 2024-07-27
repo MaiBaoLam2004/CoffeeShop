@@ -18,7 +18,7 @@ function Favorites(){
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    fetch('http://10.24.54.72:3000/favorite') // Đảm bảo thay thế bằng địa chỉ IP của bạn
+    fetch('http://192.168.1.106:3000/favorite') // Đảm bảo thay thế bằng địa chỉ IP của bạn
       .then(response => response.json())
       .then(data => {
         setFavorites(data);

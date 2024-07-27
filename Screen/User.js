@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -6,21 +8,81 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 
 const data = {
   photo:
     'https://cdn3d.iconscout.com/3d/premium/thumb/boy-avatar-6299533-5187865.png?f=webp',
-  name: 'Lam',
-  email: 'lam123@gmail.com',
-  pass: 12345,
-  pass2: 12345,
 };
 
 function User() {
   const navigation = useNavigation();
-  const [userData, setUserData] = useState(data);
+  const [userData, setUserData] = useState({
+    id: '',
+    username: '',
+    email: '',
+    password: '', // Mật khẩu hiện tại
+  });
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Gọi API để lấy dữ liệu người dùng
+    fetch('http://192.168.1.106:3000/users')
+      .then(response => response.json())
+      .then(data => {
+        const user = data[0]; // Lấy người dùng đầu tiên trong danh sách
+        setUserData({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          password: '', // Không hiển thị mật khẩu hiện tại
+        });
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Lỗi khi lấy dữ liệu: ', error);
+        setLoading(false);
+      });      
+  }, []);
+
+  const updatePassword = () => {
+  // Kiểm tra mật khẩu mới và mật khẩu xác nhận
+  if (newPassword && newPassword !== confirmPassword) {
+    Alert.alert('Lỗi', 'Mật khẩu không khớp');
+    return;
+  }
+
+  // Tạo đối tượng updatedUser với thông tin người dùng
+  const updatedUser = {
+    username: userData.username,
+    email: userData.email,
+    password: newPassword || userData.password // Chỉ cập nhật mật khẩu mới nếu có, giữ mật khẩu hiện tại nếu không có
+  };
+
+  // Gửi yêu cầu PUT để cập nhật thông tin người dùng
+  fetch(`http://192.168.1.106:3000/users/${userData.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedUser),
+  })
+    .then(response => response.json())
+    .then(data => {
+      Alert.alert('Thành công', 'Đổi thông tin thành công');
+    })
+    .catch(error => {
+      console.error('Lỗi khi cập nhật thông tin: ', error);
+      Alert.alert('Lỗi', 'Cập nhật thông tin thất bại');
+    });
+};
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -54,8 +116,8 @@ function User() {
           style={styles.input}
           placeholder="Tài khoản"
           placeholderTextColor="rgba(255, 255, 255, 0.5)"
-          value={userData.name}
-          onChangeText={text => setUserData({...userData, name: text})}
+          value={userData.username}
+          onChangeText={text => setUserData({...userData, username: text})}
         />
         <TextInput
           style={styles.input}
@@ -64,7 +126,7 @@ function User() {
           value={userData.email}
           onChangeText={text => setUserData({...userData, email: text})}
         />
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           placeholder="Mật khẩu"
           placeholderTextColor="rgba(255, 255, 255, 0.5)"
@@ -79,8 +141,24 @@ function User() {
           secureTextEntry
           value={userData.pass2}
           onChangeText={text => setUserData({...userData, pass2: text})}
-        />
-        <TouchableOpacity style={styles.loginButton}>
+        /> */}
+        <TextInput
+        style={styles.input}
+        placeholder="Mật khẩu mới"
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        secureTextEntry
+        value={newPassword}
+        onChangeText={text => setNewPassword(text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Nhập lại mật khẩu mới"
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={text => setConfirmPassword(text)}
+      />
+        <TouchableOpacity style={styles.loginButton} onPress={updatePassword}>
           <Text style={styles.loginButtonText}>Save</Text>
         </TouchableOpacity>
       </View>

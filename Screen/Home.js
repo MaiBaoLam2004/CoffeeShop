@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
@@ -18,7 +17,7 @@ function Home() {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    fetch('http://10.24.54.72:3000/products') // Đảm bảo thay thế bằng địa chỉ IP của bạn
+    fetch('http://192.168.1.106:3000/products') // Đảm bảo thay thế bằng địa chỉ IP của bạn
       .then(response => response.json())
       .then(data => {
         setProducts(data);

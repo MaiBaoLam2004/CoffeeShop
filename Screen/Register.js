@@ -23,7 +23,7 @@ function Register() {
 
   const registerUser = async (username, email, password) => {
     try {
-      const response = await fetch('http://10.24.54.72:3000/users', {
+      const response = await fetch('http://192.168.1.106:3000/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

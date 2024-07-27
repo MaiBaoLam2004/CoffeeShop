@@ -23,7 +23,12 @@ const Drawer = createDrawerNavigator();
 
 function MyDrawer() {
   return (
-    <Drawer.Navigator initialRouteName="MainScreen">
+    <Drawer.Navigator initialRouteName="MainScreen"
+    screenOptions={{
+          headerShown: false,
+          contentStyle: {paddingTop: 0}, // Loại bỏ khoảng trắng phía trên
+        }}
+    >
       <Drawer.Screen name="MainScreen" component={MainScreen} />
       <Drawer.Screen name="Setting" component={Setting}/>
     </Drawer.Navigator>
@@ -62,10 +67,10 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        // screenOptions={{
-        //   headerShown: false,
-        //   contentStyle: {paddingTop: 0}, // Loại bỏ khoảng trắng phía trên
-        // }}
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {paddingTop: 0}, // Loại bỏ khoảng trắng phía trên
+        }}
         initialRouteName="WellCome">
         <Stack.Screen name="WellCome" component={WellCome} />
         <Stack.Screen name="Login" component={Login} />

@@ -32,7 +32,7 @@ function Login() {
     }
     
     try {
-      const response = await fetch('http://10.24.54.72:3000/users');
+      const response = await fetch('http://192.168.1.106:3000/users');
       const users = await response.json();
   
       // Tìm kiếm người dùng trong danh sách users với tên đăng nhập hoặc email
@@ -53,10 +53,10 @@ function Login() {
       console.log('Login successful:', user);
   
       // Hiển thị thông báo sau 1 giây
-      setTimeout(() => {
-        Alert.alert('Thông báo', 'Bạn đã đăng nhập thành công.')
+      // setTimeout(() => {
+      //   Alert.alert('Thông báo', 'Bạn đã đăng nhập thành công.')
         navigation.navigate('MyDrawer');
-      }, 1000);
+      // }, 1000);
     } catch (error) {
       console.error('Error logging in:', error.message);
       Alert.alert('Thông báo', 'Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.');

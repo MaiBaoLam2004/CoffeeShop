@@ -61,7 +61,7 @@ const Setting = () => {
             <Image
               style={styles.itemImg}
               source={{
-                uri: 'https://i.pinimg.com/564x/06/24/44/0624448f94b585d5f3543c3a51458420.jpg',
+                uri: 'https://img.lovepik.com/free-png/20211126/lovepik-black-back-key-arrow-png-image_401156358_wh1200.png',
               }}
             />
           </View>
@@ -75,8 +75,8 @@ const Setting = () => {
         transparent={true}
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 , height:'20%'}}>
-            <Text style={{fontSize: 25, fontWeight:'bold', marginTop: 10, color:'black'}}>Bạn có muốn đăng xuất không?</Text>
+          <View style={{ backgroundColor: '#0C0F14', padding: 20, borderRadius: 10 , height:'20%', borderColor:'white', borderWidth:1}}>
+            <Text style={{fontSize: 25, fontWeight:'bold', marginTop: 10, color:'white'}}>Bạn có muốn đăng xuất không?</Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '15%'}}>
               <TouchableOpacity onPress={handleLogoutCancel} style={{ backgroundColor: 'red', padding: 10, borderRadius: 5 }}>
                 <Text style={{ color: 'white', fontSize: 20, fontWeight:'bold' }}>Không</Text>
